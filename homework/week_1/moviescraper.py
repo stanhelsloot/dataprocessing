@@ -19,37 +19,46 @@ OUTPUT_CSV = 'movies.csv'
 
 def extract_movies(dom):
     """
-    Extract a list of highest rated movies from DOM (of IMDB page).
-    Each movie entry should contain the following fields:
-    - Title
-    - Rating
-    - Year of release (only a number!)
-    - Actors/actresses (comma separated if more than one)
-    - Runtime (only a number!)
+    Extracts a list of highest rated movies from DOM (of IMDB page).
     """
-
-    # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
-    # HIGHEST RATED MOVIES
-    # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
-    # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
-    title_list = []
     html_data = open(BACKUP_HTML, 'r')
     soup = BeautifulSoup(html_data, 'html.parser')
+    title_list = retrieve_title(soup)
+    rating_list = retrieve_rating(soup)
+    year_list = retrieve_year(soup)
+    actor_list = retrieve_actor(soup)
+    runtime_list = retrieve_runtime(soup)
+    return [title_list, rating_list, year_list, actor_list, runtime_list]
+
+
+def retrieve_title(soup):
+    """Appends titles to a list"""
+    title_list = []
+    # select the header, which contains the tile as a link.
     for movie_header in soup.find_all('h3'):
+        # select link containing title
         movie_title = movie_header.find('a')
+        # if movie_title exists
         if movie_title:
+            # gather and append the title to list
             text = movie_title.get_text()
-            # retrieves titles
             text = text.strip()
             title_list.append(text)
+    return(title_list)
 
-    # retrieves rating
+
+def retrieve_rating(soup):
+    """Appends ratings to a list"""
     rating_list = []
     for rating in soup.find_all('strong'):
+        # ratings are strings containing dots
         if "." in rating.text:
             rating_list.append(rating.text)
+    return(rating_list)
 
-    # retrieves year of release
+
+def retrieve_year(soup):
+    """Appends release years to a list"""
     year_list = []
     year = soup.find_all("span", "lister-item-year text-muted unbold")
     for i in year:
@@ -59,8 +68,11 @@ def extract_movies(dom):
             i = i[1]
         i = i.strip("()")
         year_list.append(i)
+    return(year_list)
 
-    # actors/actresses
+
+def retrieve_actor(soup):
+    """Appends actors to a list"""
     actor_list = []
     actor = soup.find_all("p", class_="")
     for line in actor:
@@ -71,16 +83,17 @@ def extract_movies(dom):
             # actors are split into a list which is appended to another list
             actor = m.group(0).split("\n")
             actor_list.append(actor)
+    return(actor_list)
 
-    # retrieves list of runtimes
+
+def retrieve_runtime(soup):
+    """Appends runtimes to a list"""
     runtime_list = []
     runtime = soup.find_all("span", "runtime")
     for i in runtime:
         i = i.string.split()
         runtime_list.append(i[0])
-
-
-    return [title_list, rating_list, year_list, actor_list, runtime_list]
+    return(runtime_list)
 
 
 def save_csv(outfile, movies):
@@ -89,12 +102,9 @@ def save_csv(outfile, movies):
     """
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Year', 'Actors', 'Runtime'])
-
     rows = zip(movies[0], movies[1], movies[2], movies[3], movies[4])
     for row in rows:
         writer.writerow(row)
-
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE MOVIES TO DISK
 
 
 def simple_get(url):
@@ -110,7 +120,8 @@ def simple_get(url):
             else:
                 return None
     except RequestException as e:
-        print('The following error occurred during HTTP GET request to {0} : {1}'.format(url, str(e)))
+        print('The following error occurred during HTTP GET request \
+              to {0} : {1}'.format(url, str(e)))
         return None
 
 

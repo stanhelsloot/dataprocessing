@@ -17,7 +17,7 @@ END_YEAR = 2018
 data_dict = {str(key): [] for key in range(START_YEAR, END_YEAR)}
 
 # add movies.csv data to data_dict
-with open(INPUT_CSV, newline = "") as csvfile:
+with open(INPUT_CSV, newline="") as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         # collect all ratings per year
@@ -43,5 +43,7 @@ if __name__ == "__main__":
         year_list.append(year)
         data_list.append(data_dict[str(year)])
     plt.plot(year_list, data_list)
-    plt.axis([2007, 2019, 6, 10])
+    plt.axis([2007, 2018, 8, 9])
+    plt.xlabel("Year")
+    plt.ylabel("Average Rating")
     plt.show()
