@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Name:
-# Student number:
+# Name: Stan Helsloot
+# Student number: 10762388
 """
 This script visualizes data obtained from a .csv file
 """
@@ -26,14 +26,10 @@ with open(INPUT_CSV, newline="") as csvfile:
 # make averages of the ratings
 for year in range(START_YEAR, END_YEAR):
     rating_list = data_dict[str(year)]
-    rating_average = []
-    for rating in rating_list:
-        rating = float(rating)
-        rating_average.append(rating)
-    rating_average = sum(rating_average) / float(len(rating_list))
+    # convert items in rating_list to floats
+    rating_list = [float(rating) for rating in rating_list]
+    rating_average = sum(rating_list) / float(len(rating_list))
     data_dict[str(year)] = rating_average
-
-    # print(rating_list)
 
 
 if __name__ == "__main__":
