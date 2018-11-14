@@ -3,6 +3,7 @@
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 
 RAW_INPUT = "input.csv"
 INPUT = "input_edited.csv"
@@ -32,7 +33,7 @@ def load_input(filename):
 
                     if key == "GDP ($ per capita) dollars":
                         split = row[key].split()
-                        row[key] = split[0]
+                        row[key] = int(split[0])
                     if key == "Infant mortality (per 1000 births)":
                         row[key] = row[key].replace(",", ".")
                         row[key] = float(row[key])
@@ -65,45 +66,98 @@ def set_pandas(data):
 
 def calculate_gdp(df):
     gdp = df.ix[:, "GDP ($ per capita) dollars"]
-    length = (len(df.index) - 1)//2
+    # sort the colomn to determine outliers
     gdp = gdp.sort_values()
-    median = gdp.iloc[length]
-    print(median)
-    mean = gdp.sum()//len(df.index)
-    print(mean)
-    # mode is most common gdp
-    counter = {}
-    list_1 = []
-    for i in range(len(df.index)):
-        list_1.append(int(gdp.iloc[i]))
-        if gdp.iloc[i] in counter:
-            counter[gdp.iloc[i]] += 1
-        else:
-            counter[gdp.iloc[i]] = 1
-    mode = max(counter, key=counter.get)
-    print(mode)
-    return list_1
+    # gather information on the median, mean and mode
+    # select the country corresponding to the median
+    country_list = return_countries(df, gdp.median(),
+                                    "GDP ($ per capita) dollars")
+    print("The median is ", gdp.median(), " dollars. Coutries with a gdp \
+corresponding to the median are: ", country_list, "")
+
+    print("""The standard deviation was caluculated. From this was noted that
+    the std larger than most of the values. The outlier at 400000 was Suriname,
+    which was thereafter excluded from the plot. This reduced the std by
+    nearly a factor 3.""")
+    # remove Suriname from the series of GDP
+    gdp = gdp.drop(193)
+    # std = gdp.std()
+    # print(std)
+    mean = round(gdp.mean())
+    print("The mean has a value of", mean, "dollars")
+    country_list = return_countries(df, gdp.mode()[0],
+                                    "GDP ($ per capita) dollars")
+    print("The mode has a value of", gdp.mode()[0], "dollars, \
+corresponding with the following countries: ", country_list, "")
+    # get the countries representing these numbers
+    return gdp
+
+
+def return_countries(df, value, column):
+    country_raw = df.loc[df[column] == value]
+    country_raw = country_raw.ix[:, "Country"]
+    country_list = []
+    for country in country_raw:
+        country_list.append(country)
+    return(country_list)
 
 
 def calculate_mortality(df):
     mortality = df.ix[:, "Infant mortality (per 1000 births)"]
     mortality = mortality.sort_values()
+    print("""Several countries did not have records on the infant mortality rate
+    according to the data. These countries were excluded from the dataset.
+    Rows with unreliable data were found by searching for the countries with
+    a mortality rate of 0.0. These countries were searched for in the
+    and removedinput_edited""")
+    # drop countries with unreliable values
+    mortality = mortality.drop(labels=[47, 221, 223])
+    # calcute the minimum
+    minimum = mortality.min()
+    print("The lowest reliable value is", minimum, " deaths per 1000 births")
+    first_quartile = mortality.quantile(.25)
+    print("The first quartile equals ", first_quartile, "deaths per 1000 births")
+    median = mortality.median()
+    print("The median equals ", median, "deaths per 1000 births")
+    third_quartile = mortality.quantile(.75)
+    print("The third quartile equals ", third_quartile, "deaths per 1000 births")
+    maximum = mortality.max()
+    # could not verify that this value is reliable, but maybe it is old data?
+    print("The maximum equals ", maximum, "deaths per 1000 births")
+
     return mortality
 
 
 def plot(gdp, mortality):
 
-    plt.subplot(2, 1, 1)
-    plt.hist(gdp, density=True, bins=30)
-    plt.title('GDP, MORTALITY')
-    plt.xlabel('GDP')
+    plt.subplot(3, 1, 1)
+    plt.hist(gdp)
+    plt.title("The GDP plotted against the amount of countries")
+    plt.xlabel("GDP ($ per capita) dollars")
     plt.ylabel("Amount of countries")
 
-    plt.subplot(2, 1, 2)
+    plt.subplot(3, 1, 2)
     plt.boxplot(mortality)
-    plt.ylabel('MORTALITY')
+    plt.title("The infant mortality rate plotted as a boxplot")
+    # plt.axis("equal")
+    plt.ylabel("Infant mortality (per 1000 births)")
 
+    plt.subplots_adjust(hspace=2)
     plt.show()
+
+
+def make_json(attribute_list):
+    # convert attribute_list to json usable format
+    dict_json = {}
+    for row in attribute_list:
+        # make a key to store the country name
+        key = row["Country"]
+        # remove country name from the row
+        row.pop("Country")
+        # use country name as key and the remainder of the row as value
+        dict_json[key] = row
+    with open('data.json', 'w') as outfile:
+        json.dump(dict_json, outfile)
 
 
 if __name__ == "__main__":
@@ -112,4 +166,5 @@ if __name__ == "__main__":
     df = set_pandas(INPUT)
     gdp = calculate_gdp(df)
     mortality = calculate_mortality(df)
+    make_json(attribute_list)
     plot(gdp, mortality)
