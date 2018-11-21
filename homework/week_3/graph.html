@@ -1,0 +1,30 @@
+<!--Stan Helsloot, 10762388  -->
+
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Graph</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script type="text/javascript">
+      var fileName = "data.json";
+      var txtFile = new XMLHttpRequest();
+      txtFile.onreadystatechange = function() {
+          if (txtFile.readyState === 4 && txtFile.status == 200) {
+              console.log(JSON.parse(txtFile.responseText));
+          }
+      }
+      txtFile.open("GET", fileName);
+      txtFile.send();
+
+      console.log(txtFile.responseText)
+      // txtFile.responseText.forEach(function(value) {
+      //   console.log(value)
+      // });
+    </script>
+
+  </body>
+</html>
