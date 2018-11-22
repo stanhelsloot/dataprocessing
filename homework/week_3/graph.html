@@ -8,22 +8,74 @@
     <title>Graph</title>
   </head>
   <body>
-    <canvas id="canvas" width="300" height="300"></canvas>
+    <canvas id="canvas" width="1200" height="800"></canvas>
     <script type="text/javascript">
       var fileName = "data.json";
       var txtFile = new XMLHttpRequest();
       txtFile.onreadystatechange = function() {
           if (txtFile.readyState === 4 && txtFile.status == 200) {
-              console.log(JSON.parse(txtFile.responseText));
+              var obj = (JSON.parse(txtFile.responseText));
+              var dat = (obj.data)
+              // split lists
+              var years = []
+              var deaths = []
+              for (var i = 0; i < dat.length; i++){
+                years.push(dat[i][0])
+                deaths.push(dat[i][1])
+              }
+              // calculate min and max for use in createTransform
+              var min_deaths = Math.min(...deaths)
+              var max_deaths = Math.max(...deaths)
+              var min_years = Math.min(...years)
+              var max_years = Math.max(...years)
+
+              // initialize canvas
+              var canvas = document.getElementById("canvas");
+              var ctx = canvas.getContext("2d");
+              var range_x = [0, 1200]
+              var range_y = [0, 800]
+
+
+              // calculate the adjusted values for the variables
+              x = (createTransform(min_deaths, max_deaths, range_y))
+              y = (createTransform(min_years, max_years, range_x))
+
+              // draw the outlines
+              ctx.rect(0, 0, 1200, 800)
+              ctx.stroke()
+
+              // draw the plot
+              ctx.beginPath();
+              ctx.moveTo(0, deaths[0]);
+              for (var i = 0; i < deaths.length; i ++) {
+                ctx.lineTo(y(years[i]), x(deaths[i]));
+              }
+              ctx.stroke()
+
+              function createTransform(domain_min, domain_max, range) {
+              // domain is a two-element array of the data bounds [domain_min, domain_max]
+              // range is a two-element array of the screen bounds [range_min, range_max]
+
+              var domain_min = domain_min
+              var domain_max = domain_max
+              var range_min = range[0]
+              var range_max = range[1]
+
+
+              // formulas to calculate the alpha and the beta
+              var alpha = (range_max - range_min) / (domain_max - domain_min)
+              var beta = range_max - alpha * domain_max
+
+              // returns the function for the linear transformation (y= a * x + b)
+              return function(x){
+                return alpha * x + beta;
+              }
+              }
           }
       }
       txtFile.open("GET", fileName);
       txtFile.send();
 
-      console.log(txtFile.responseText)
-      // txtFile.responseText.forEach(function(value) {
-      //   console.log(value)
-      // });
     </script>
 
   </body>

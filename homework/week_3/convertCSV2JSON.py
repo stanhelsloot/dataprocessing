@@ -2,32 +2,27 @@
 # program desgined for transforming csv/txt files to JSON files.
 import pandas as pd
 import json
+import xlrd
 
-INPUT = "KNMI_20181118.txt"
-
+INPUT = "maatwerktabel_verdrinking_2017.xlsx"
+INPUT_CSV = "csvfile.csv"
 
 def read_write_file(filename):
     """Method for reading input file"""
-    df = pd.read_csv(f"{INPUT}", sep=",", header=None, comment="#")
-    df.columns = ["station_id", "date", "max temperature", "max windspeed"]
-    # print(df)
-    df = df.drop(labels="station_id", axis=1)
-    # with open(f"{filename}.json", "w") as JSON_file:
-        # json.dump(df, JSON_file)
-    df_json_format = df.to_json(orient="records")
-    # df_json_format = dict(df_json_format)
-    # print(df_json_format)
+    # converting excel file to csv file
+    df_xls = pd.read_excel(f"{INPUT}")
+    df_xls.to_csv('csvfile.csv', index=False)
+    # use csv file to load dataframe
+    df = pd.read_csv(INPUT_CSV, sep=",")
+    # Only the data of the age group 10-19 will be used
+    df_processed = df[["Jaar", "10-19 jaar"]]
+    # df_processed has to be converted to usable JSON format
+    df_json_ready = df_processed.to_dict(orient="split")
+    df_json_ready.pop("index")
+    print(df_json_ready)
     with open('data.json', 'w') as outfile:
-        json.dump(df_json_format, outfile)
-    # with open(filename, "r") as input_file:
-    #     for line in input_file:
-    #         # what to read: everything without pound sign
-    #         if line.startswith("#"):
-    #             pass
-    #         else:
-    #             # lines consist of: station_id,date,  highest T in 0.1 C,
-    #             # max windspeed in 0.1 m/s
-    #             # split lines at the ","
+        json.dump(df_json_ready, outfile)
+
 
 if __name__ == "__main__":
     read_write_file(INPUT)
