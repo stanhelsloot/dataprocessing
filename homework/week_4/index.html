@@ -1,0 +1,139 @@
+<!-- Stan Helsloot, 10762388  -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+        <link rel="shortcut icon" href="#" />
+        <style type="text/css">
+          div.tooltip {
+           position: absolute;
+           text-align: center;
+           color: white;
+           width: 40px;
+           height: 20px;
+           padding: 2px;
+           background: rgba(0,0,0,.8);
+           pointer-events: none;
+         }
+        </style>
+    </head>
+    <body>
+      <script type="text/javascript">
+        d3.select("body").append("h3").text("Male and Female mean BMI per country");
+        // creation of size of SVG
+        var w = 800;
+        var h = 100;
+        var barPadding = 1;
+        var padding = 30;
+        // // determining min and max
+        // d3.max(data, function(d) {    //Returns 480
+        //   return d[2];  //References first value in each sub-array
+        // });
+        // d3.min(data, function(d) {    //Returns 480
+        //   return d[2];  //References first value in each sub-array
+        // });
+
+        // creating a svg object
+        var svg = d3.select("body").append("svg").attr("width", w + padding).attr("height", h + padding)
+        // setting the y-scale
+        var yScale = d3.scaleLinear()
+                      .domain([23, 29])
+                      .range([0, h]);
+
+        // scaling factor for the colours
+        var colorScale = d3.scaleLinear()
+                           .domain([23, 29])
+                           .range([80, 255]);
+
+        // taking data.json as datafile
+        d3.json("data.json").then(function(data) {
+          // select "data" from datafile
+          data = data.data
+          const div = d3.select('body')
+                        .append('div')
+                        .attr('class', 'tooltip')
+                        .style('opacity', 0);
+
+          // creating the bars for the bargraph
+          svg.selectAll("rect")
+             .data(data)
+             .enter()
+             .append("rect")
+             .attr("width", w / data.length - barPadding)
+             .attr("x", function(d, i) {
+                return i * (w / data.length) + padding;
+              })
+              .attr("y", function(d) {
+                return h - yScale(d[2]);
+              })
+              .attr("height", function(d) {
+                return yScale(d[2]);
+              })
+              .on('mouseover', d => {
+                  div.transition()
+                   .duration(100)
+                   .style('opacity', 0.9);
+                  div.html(Math.round(d[2]))
+                   .style('left', d3.event.pageX + "px")
+                   .style('top', d3.event.pageY - 28 + "px");
+              })
+              .on('mouseout', () => {
+                  div
+                  .transition()
+                  .duration(500)
+                  .style('opacity', 0);
+              });
+
+          // colour all female databars with a shade of green
+          svg.selectAll("rect").filter(":nth-child(even)")
+              .attr("fill", function(d) {
+                return "rgb(" + (colorScale(d[2])) + ", 0, 0)";
+              });
+
+          // colour all male databars with a shade of blue
+          svg.selectAll("rect").filter(":nth-child(odd)")
+              .attr("fill", function(d) {
+                return "rgb(0, 0, " + (colorScale(d[2])) + ")";
+              });
+          svg.append
+
+          // creating an array to store the country code data
+          var iso = [];
+          for (var i = 0; i < data.length; i++){
+            iso[i] = data[i][0];
+          }
+
+          // setting y axis
+          var yAxis = d3.axisLeft()
+                        .scale(yScale)
+                        .ticks(5);
+
+          // appending axis
+          svg.append("g")
+            .attr("class", "yaxis")
+            .attr("transform", "translate(" + padding + ",0)")
+            .call(yAxis);
+
+          // setting x axis
+          var xAxis = d3.scaleBand()
+                        .domain(iso)
+                        .range([padding, w + padding]);
+
+          // appending axis
+          svg.append("g")
+            .attr("class", "xaxis")
+            .attr("transform", "translate(0," + h + ")")
+            .call(d3.axisBottom(xAxis));
+        });
+
+
+        // text in the document
+        d3.select("head").append("title").text("mean BMI per country");
+        d3.select("body").append("p").text("Visualization by Stan Helsloot, student number 10762388");
+        d3.select("body").append("p").text("For this assignment male and female BMI averages per European country will be used from the year 2016 and displayed using a bar graph.")
+        d3.select("body").append("p").text("Blue bars represent male average BMI whilst red bars represent female average BMI per country.")
+        </script>
+    </body>
+</html>
