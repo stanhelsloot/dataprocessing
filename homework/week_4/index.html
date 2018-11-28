@@ -27,10 +27,7 @@
         var h = 300;
         var barPadding = 1;
         var padding = 30;
-<<<<<<< HEAD
-=======
-          
->>>>>>> 61a7141e180e5a52bbca9c7f41393903ef322d4f
+
         // creating a svg object
         var svg = d3.select("body").append("svg").attr("width", w + padding).attr("height", h + padding)
         // setting the y-scale
@@ -86,10 +83,10 @@
           svg.selectAll("rect").filter(":nth-child(even)")
               .attr("fill", function(d) {
                 return "rgb(" + (colorScale(d[2])) + ", 0, 0)";
-              })
-              .on("mouseover", function() {
-                d3.select(this).style("opacity", 0,5);
               });
+              // .on("mouseover", function() {
+              //   d3.select(this).style("opacity", 0,5);
+              // });
 
           // colour all male databars with a shade of blue
           svg.selectAll("rect").filter(":nth-child(odd)")
