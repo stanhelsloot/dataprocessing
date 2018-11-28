@@ -27,6 +27,10 @@
         var h = 300;
         var barPadding = 1;
         var padding = 30;
+<<<<<<< HEAD
+=======
+          
+>>>>>>> 61a7141e180e5a52bbca9c7f41393903ef322d4f
         // creating a svg object
         var svg = d3.select("body").append("svg").attr("width", w + padding).attr("height", h + padding)
         // setting the y-scale
@@ -69,7 +73,7 @@
                    .style('opacity', 0.9);
                   div.html(Math.round(d[2] * 10) / 10)
                    .style('left', d3.event.pageX + "px")
-                   .style('top', d3.event.pageY - 28 + "px");
+                   .style('top', d3.event.pageY - 20 + "px");
               })
               .on('mouseout', () => {
                   div
