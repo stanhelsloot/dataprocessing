@@ -24,15 +24,15 @@
         d3.select("body").append("h3").text("Male and Female mean BMI per country");
         // creation of size of SVG
         var w = 800;
-        var h = 100;
+        var h = 300;
         var barPadding = 1;
         var padding = 30;
         // creating a svg object
         var svg = d3.select("body").append("svg").attr("width", w + padding).attr("height", h + padding)
         // setting the y-scale
         var yScale = d3.scaleLinear()
-                      .domain([23, 29])
-                      .range([0, h]);
+                      .domain([0, 32])
+                      .range([h, 0]);
 
         // scaling factor for the colours
         var colorScale = d3.scaleLinear()
@@ -58,16 +58,16 @@
                 return i * (w / data.length) + padding;
               })
               .attr("y", function(d) {
-                return h - yScale(d[2]);
+                return yScale(d[2]);
               })
               .attr("height", function(d) {
-                return yScale(d[2]);
+                return h - yScale(d[2]);
               })
               .on('mouseover', d => {
                   div.transition()
                    .duration(100)
                    .style('opacity', 0.9);
-                  div.html(Math.round(d[2]))
+                  div.html(Math.round(d[2] * 10) / 10)
                    .style('left', d3.event.pageX + "px")
                    .style('top', d3.event.pageY - 28 + "px");
               })
@@ -82,6 +82,9 @@
           svg.selectAll("rect").filter(":nth-child(even)")
               .attr("fill", function(d) {
                 return "rgb(" + (colorScale(d[2])) + ", 0, 0)";
+              })
+              .on("mouseover", function() {
+                d3.select(this).style("opacity", 0,5);
               });
 
           // colour all male databars with a shade of blue
