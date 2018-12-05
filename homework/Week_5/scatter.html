@@ -3,13 +3,34 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>D3 Scatter</title>
+    <title>D3 Scatterplot</title>
     <!-- importing 3 files: d3, js script and stylesheet -->
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-    <script text="text/javascript" src="scatter.js"></script>
-    <link rel="stylesheet" href="/css/scatter.css">
+
+    <link rel="stylesheet" href="scatter.css">
   </head>
   <body>
+    <h1>Consumer confidence against women in science</h1>
+    <p>Plot by Stan Helsloot, student number 10762388</p>
+    <p>In this plot, consumer confidence and the percentage of women in science are plotted against one another.
+    The dataset contains 6 different countries and ranges from 2007 to 2015.
+    Using the drop down menu the different years can be selected.</p>
+    <p>
+      <select id="1" class="dropdown">
+       <option value="">All Years</option>
+       <option value="2007">2007</option>
+       <option value="2008">2008</option>
+       <option value="2009">2009</option>
+       <option value="2010">2010</option>
+       <option value="2011">2011</option>
+       <option value="2012">2012</option>
+       <option value="2013">2013</option>
+       <option value="2014">2014</option>
+       <option value="2015">2015</option>
+      </select>
+      <button onclick="setGraph()">Submit</button>
+    </p>
+    <p><script text="text/javascript" src="scatter.js"></script></p>
 
   </body>
 </html>
