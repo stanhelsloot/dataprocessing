@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Map</title>
+    <title>Linked View</title>
     <script src="http://d3js.org/d3.v5.min.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="map.css">
   </head>
   <body>
+    <h1>BMI data of the world</h1>
+    <p>By Stan Helsloot, student number 10762388.</p>
+    <p>The following page shows the BMI data per country in a map. When clicking on the map, the average male BMI per year from 1975 to 2016 is displayed in a graph for that specific country.</p>
+    <p>Hovering over a country in the map will display the BMI data from 2016 and show the name of the country.</p>
+    <p>The data was not available for several countries which are displayed in red.</p>
+    <p>Moving over the graph with your mouse will display year specific BMI data from the chosen country.</p>
+    <p>The legend of the worldmap was based on code from http://bl.ocks.org/darrenjaworski/5397362</p>
+    <p>The tooltip of the linechart was made by combining pieces of code from https://bl.ocks.org/alandunning/cfb7dcd7951826b9eacd54f0647f48d3 and http://bl.ocks.org/wdickerson/64535aff478e8a9fd9d9facccfef8929 (and of course altering the code so it works :)</p>
+    <p>The data from the datasets originated from "http://bl.ocks.org/micahstubbs/raw/8e15870eb432a21f0bc4d3d527b2d14f/a45e8709648cafbbf01c78c76dfa53e31087e713/world_countries.json" for the geographical data for the drawing of the worldmap and from http://ncdrisc.org/data-downloads-adiposity.html the BMI data was acquierd (country specific data for all countries)</p>
+    <p>The BMI data was converted twice using the "csvconverter.py" program (which can be found in the GIT page corresponding to this assignment); once for 2016 and once for all years.</p>
+    <p>Also a big thanks to Justin Palmer for usage of his tooltip script.</p>
     <script src="map.js" charset="utf-8"></script>
   </body>
 </html>

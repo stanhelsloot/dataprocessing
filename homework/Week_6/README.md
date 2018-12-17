@@ -1,1 +1,2 @@
-https://data.worldbank.org/indicator/VC.IHR.PSRC.P5?view=map&year_low_desc=false
+All links are provided on the page of the site.
+This visualization shows BMI data for most countries in the world.
