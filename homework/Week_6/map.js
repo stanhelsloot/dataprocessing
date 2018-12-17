@@ -18,9 +18,14 @@ window.onload = function() {
               .attr('class', 'd3-tip')
               .offset([0, 0])
               .html(function(d) {
-                return "<strong>Country: </strong><span class='details'>" + d.properties.name + "<br></span>" + "<strong>BMI: </strong><span class='details'>"+ 19 +"</span>";
+                for (let i = 0; i < bmiData.length; i++){
+                  if (d.properties.name == bmiData[i][0]){
+                    bmi = bmiData[i][3]
+                  }
+                }
+                return "<strong>Country: </strong><span class='details'>" + d.properties.name + "<br></span>" + "<strong>BMI: </strong><span class='details'>"+ bmi +"</span>";
               });
-
+    
   // set width, height, padding and margins
   var w = 1300;
   var h = 600;
